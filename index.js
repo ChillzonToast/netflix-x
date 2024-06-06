@@ -16,7 +16,6 @@ app.get('/', async (req, res) => {
     const popularResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`);
     const topRatedResponse = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbApiKey}`);
     const ytsNewReleasesResponse = await axios.get('https://yts.mx/api/v2/list_movies.json?sort_by=date_added');
-    console.log(ytsNewReleasesResponse.data.data.movies[0]);
     res.render('index.ejs', {
         resultsPopular: popularResponse.data.results,
         resultsTopRated: topRatedResponse.data.results,
