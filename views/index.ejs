@@ -1,0 +1,55 @@
+<%- include('header.ejs' ,{movies:'white',tvShows:'secondary',myList:'secondary',style:'main'}) %>
+<div id="intro" class="container my-3">
+    <h2>Download and Watch Anything You Want.</h2>
+    <h4>Our site provides you the best of media content all in one place</h4>
+</div>
+
+<div class="main-content container my-3">
+    <h3>Popular</h3>
+    <div class="movies d-inline-flex flex-row">
+        <!-- Insert Popular Movies here -->
+        <% resultsPopular.forEach((movie)=> { %>
+            <form method="post" action="/movie"><button name="movieSelect" type="submit" value="<%= movie.id %>">
+                    <div class="movie">
+                        <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
+                            class="m-2" alt="<%='Poster of' + movie.title %>">
+                        <p>
+                            <%= movie.title %>
+                        </p>
+                    </div>
+                    <input type="hidden" name="provider" value="tmdb">
+                </button></form>
+            <% }) %>
+    </div>
+    
+    <h3>Top Rated</h3>
+    <div class="movies d-inline-flex flex-row">
+        <!-- Insert Top Rated Movies here -->
+        <% resultsTopRated.forEach((movie)=> { %>
+            <form method="post" action="/movie"><button name="movieSelect" type="submit" value="<%= movie.id %>">
+            <div class="movie">
+                <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '??api_key=bec65bb3754d6123171bbcb3124167f0' %>"
+                    class="m-2" alt="<%='Poster of' + movie.title %>">
+                <p>
+                    <%= movie.title %>
+                </p>
+            </div><input type="hidden" name="provider" value="tmdb">
+        </button></form>
+            <% }) %>
+    </div>
+    <h3>Newly Added (YIFY)</h3>
+    <div class="movies d-inline-flex flex-row">
+        <!-- Insert Newly Added Movies here -->
+        <% resultsNewlyAdded.forEach((movie)=> { %>
+            <form method="post" action="/movie"><button name="movieSelect" type="submit" value="<%= movie.imdb_code %>">
+            <div class="movie">
+                <img src="<%= movie.medium_cover_image %>" class="m-2" alt="<%='Poster of' + movie.title %>">
+                <p>
+                    <%= movie.title %>
+                </p>
+            </div><input type="hidden" name="provider" value="imdb">
+        </button></form>
+            <% }) %>
+    </div>
+</div>
+<%- include('footer.ejs') %>

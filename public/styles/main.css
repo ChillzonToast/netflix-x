@@ -1,0 +1,57 @@
+@media (max-width:992px) {
+    #intro {
+        display: none;
+    }
+}
+
+#intro h2 { 
+    text-align: center;
+}
+
+#intro h4 {
+    text-align: center;
+    font-weight: 100;
+    font-size: 20px;
+}
+#main-sections img {
+    filter: drop-shadow(0px 1000px 0 #FFFFFF);
+    transform: translateY(-1000px);
+}
+
+.movies img {
+    border-radius: 20px;
+    width:  auto;
+    max-height: 300px;
+    border: 2px solid #FFFFFF4D;
+    transition: border-color 0.3s ease;
+}
+
+.movies img:hover{
+    border-color: #FFFFFFFF;
+}
+.movie p{
+    text-align: center;
+}
+
+.container {
+    background-color: #00000000;
+}
+
+body {
+    background-color: #12151C;
+}
+
+.movies {
+    border-radius: 20px;
+    scrollbar-width: none;
+    overflow-x: auto;
+    width: 100%;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+a {
+    text-decoration: none;
+}

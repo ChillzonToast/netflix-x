@@ -1,0 +1,50 @@
+<%- include('header.ejs' ,{movies:'white',tvShows:'secondary',myList:'secondary',style:'movie'}) %>
+
+<div id="hero">
+    <img width="100%" draggable="false" src="<%= backdrop %>" alt="moviebg">
+
+    <div id="vignette-top"></div>
+    <div id="vignette-bottom"></div>
+    <div id="movie-info">
+        <h1><%= title %></h1>
+        <div id="subinfo">
+            <a href="https://www.imdb.com/title/<%= imdbId %>/"><p class="outfit-light">IMDB <%= imdb_rating %>/10</p></a>
+            <p class="outfit-light"><%= year %> ‧ <%= genre1 %>/<%= genre2 %> ‧ <%= runtime %></p>
+        </div>
+        <div id="description">
+            <p class="roboto-regular"><%= description %></p>
+        </div>
+    </div>
+    <div id="watchDwnBook">
+        <div class="outfit-semibold watchDwn-button">
+            <p>WATCH NOW</p>
+        </div>
+        <div class="outfit-semibold watchDwn-button">
+            <p>DOWNLOAD</p>
+        </div>
+        <div class="bookmark-button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 6.2C5 5.07989 5 4.51984 5.21799 4.09202C5.40973 3.71569 5.71569 3.40973 6.09202 3.21799C6.51984 3 7.07989 3 8.2 3H15.8C16.9201 3 17.4802 3 17.908 3.21799C18.2843 3.40973 18.5903 3.71569 18.782 4.09202C19 4.51984 19 5.07989 19 6.2V21L12 16L5 21V6.2Z" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"></path> </g></svg>
+        </div>
+    </div>
+</div>
+<div class="container my-3">
+    <h3>More Like This</h3>
+    <div class="movies d-inline-flex flex-row">
+        <!-- Insert More Like this Movies here -->
+        <% resultsSimilar.forEach((movie)=> { %>
+            <form method="post" action="/movie"><button name="movieSelect" type="submit" value="<%= movie.id %>">
+                    <div class="movie">
+                        <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
+                            class="m-2" alt="<%='Poster of' + movie.title %>">
+                        <p>
+                            <%= movie.title %>
+                        </p>
+                    </div>
+                    <input type="hidden" name="provider" value="tmdb">
+                </button></form>
+            <% }) %>
+
+    </div>
+</div>
+
+<%- include('footer.ejs') %>
