@@ -47,7 +47,9 @@ body {
     overflow-x: auto;
     width: 100%;
 }
-
+.movies a {
+    color: white;
+}
 button {
     background-color: #00000000;
     border: 0px;

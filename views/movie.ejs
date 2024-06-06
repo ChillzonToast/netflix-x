@@ -32,16 +32,15 @@
     <div class="movies d-inline-flex flex-row">
         <!-- Insert More Like this Movies here -->
         <% resultsSimilar.forEach((movie)=> { %>
-            <form method="post" action="/movie"><button name="movieSelect" type="submit" value="<%= movie.id %>">
-                    <div class="movie">
-                        <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
-                            class="m-2" alt="<%='Poster of' + movie.title %>">
-                        <p>
-                            <%= movie.title %>
-                        </p>
-                    </div>
-                    <input type="hidden" name="provider" value="tmdb">
-                </button></form>
+            <a href="/movie?movie_id=<%= movie.id %>"">
+                <div class="movie">
+                    <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
+                        class="m-2" alt="<%='Poster of' + movie.title %>">
+                    <p>
+                        <%= movie.title %>
+                    </p>
+                </div>
+                </a>
             <% }) %>
 
     </div>

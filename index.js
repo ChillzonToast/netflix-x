@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', async (req, res) => {
     const popularResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`);
     const topRatedResponse = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbApiKey}`);
-    const ytsNewReleasesResponse = await axios.get('https://yts.mx/api/v2/list_movies.json?sort_by=date_added')
+    const ytsNewReleasesResponse = await axios.get('https://yts.mx/api/v2/list_movies.json?sort_by=date_added');
+    console.log(ytsNewReleasesResponse.data.data.movies[0]);
     res.render('index.ejs', {
         resultsPopular: popularResponse.data.results,
         resultsTopRated: topRatedResponse.data.results,
@@ -23,23 +24,20 @@ app.get('/', async (req, res) => {
     });
 });
 
-app.post('/movie', async (req, res) => {
-    if (req.body.provider == 'tmdb') {
-        var tmdbId = req.body.movieSelect;
+app.get('/movie', async (req, res) => {
+    if (req.query.movie_id[0] != 't') {
+        var tmdbId = req.query.movie_id;
         var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`);
         var imdbId = tmdbResponse.data.external_ids.imdb_id;
         var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
 
-    } else if (req.body.provider == 'imdb') {
-        var imdbId = req.body.movieSelect;
+    } else {
+        var imdbId = req.query.movie_id;
         var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
         var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`);
         var tmdbId = tmdbResponse.data.movie_results[0].id;
         var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.data.movie_results[0].id}?api_key=${tmdbApiKey}`)
 
-    } else {
-        res.send(500);
-        console.log(req.body);
     };
 
     if (tmdbResponse.data.backdrop_path == undefined) {
