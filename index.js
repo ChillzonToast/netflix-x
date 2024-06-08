@@ -45,25 +45,17 @@ app.get('/movie', async (req, res) => {
     } else {
         var backdrop = 'https://image.tmdb.org/t/p/w1280' + tmdbResponse.data.backdrop_path;
     };
-    if (imdbResponse.data.Response == 'True') {
-        var genres = imdbResponse.data.Genre.split(", ");
-        var title = imdbResponse.data.Title;
-        var description = imdbResponse.data.Plot;
-        var year = imdbResponse.data.Year;
-        var runtime = imdbResponse.data.Runtime;
-    } else {
-        var genres = [];
-        tmdbResponse.data.genres.forEach((genre) => {
-            genres.push(genre.name);
-        });
-        var title = tmdbResponse.data.title;
-        var description = tmdbResponse.data.overview;
-        var year = tmdbResponse.data.release_date.slice(0, 4);
-        var runtime = tmdbResponse.data.runtime + ' min';
-    };
+    
+    var genres = [];
+    tmdbResponse.data.genres.forEach((genre) => {
+        genres.push(genre.name);
+    });
+    var title = tmdbResponse.data.title;
+    var description = tmdbResponse.data.overview;
+    var year = tmdbResponse.data.release_date.slice(0, 4);
+    var runtime = tmdbResponse.data.runtime + ' min';
 
-
-    const similarResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/similar?api_key=${tmdbApiKey}`);
+    const similarResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${tmdbApiKey}`);
 
     res.render('movie.ejs', {
         resultsSimilar: similarResponse.data.results,
