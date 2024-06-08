@@ -26,6 +26,11 @@ a {
     text-decoration: none;
 }
 
+#main-sections img {
+    filter: drop-shadow(0px 1000px 0 #FFFFFF);
+    transform: translateY(-1000px);
+}
+
 #intro { 
     text-align: center;
 }
@@ -33,10 +38,6 @@ a {
 #intro h4 {
     font-weight: 100;
     font-size: 20px;
-}
-#main-sections img {
-    filter: drop-shadow(0px 1000px 0 #FFFFFF);
-    transform: translateY(-1000px);
 }
 
 .movies img {

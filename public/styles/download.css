@@ -1,0 +1,90 @@
+
+#main-sections img {
+    filter: drop-shadow(0px 1000px 0 #FFFFFF);
+    transform: translateY(-1000px);
+}
+
+
+.outfit-light {
+    color: #FFFFFF;
+    font-family: "Outfit", sans-serif;
+    font-weight: 200;
+}
+
+.outfit-bold {
+    color:#FFFFFF;
+    font-family: "Outfit",sans-serif;
+    font-weight: bold;
+}
+
+
+.container {
+    background-color: #00000000;
+}
+
+body {
+    background-color: #12151C;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+#yts-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.yts-cards {
+    display: flex;
+    justify-content: space-around;
+}
+
+.yts-card {
+    flex-basis: 300px;
+    background-color: #1B222C;
+    border-radius: 15px;
+    border: 2px solid #ffffffa8;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.1s,box-shadow 0.5s,border-color 0.1s;
+}
+
+.yts-card:hover {
+    transform: scale(1);
+    box-shadow: 0 0 40px 0px #e5091474;
+    border-color: #E50914;
+}
+
+.yts-card p {
+    color:#ffffffad;
+    font-family: "Outfit",sans-serif;
+    font-weight: light;
+}
+
+.yts-card h2 {
+    font-size: 3rem;
+}
+
+.yts-card h4 {
+    font-size: 1rem;
+}
+
+.torrent-magnet {
+    display: flex;
+    justify-content:center;
+}
+.torrent-magnet a {
+
+    width: 20%;
+}
+.torrent-magnet img {
+    width: 60%;
+}
+

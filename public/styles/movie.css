@@ -17,6 +17,11 @@
 html {
     scrollbar-width: none;
 }
+
+a {
+    color: white;
+}
+
 .outfit-light {
     color: #FFFFFF;
     font-family: "Outfit", sans-serif;

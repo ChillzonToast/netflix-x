@@ -82,4 +82,14 @@ app.get('/search/movie',async (req,res) => {
     });
 });
 
+app.get('/download/movie',async (req,res) => {
+    const imdbId = req.query.imdb_id;
+    const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
+    res.render('download.ejs',{
+        ytsTorrents:ytsResponse.data.data.movie.torrents,
+        title:ytsResponse.data.data.movie.title_english,
+        title_long:ytsResponse.data.data.movie.title_long
+    });
+});
+
 app.listen(port);
