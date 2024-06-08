@@ -4,6 +4,11 @@
     }
 }
 
+
+html {
+    scrollbar-width: none;
+}
+
 .container {
     background-color: #00000000;
 }

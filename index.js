@@ -38,13 +38,6 @@ app.get('/movie', async (req, res) => {
         var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.data.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)
 
     };
-
-    if (tmdbResponse.data.backdrop_path == undefined) {
-        const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
-        var backdrop = ytsResponse.data.data.movie.background_image_original;
-    } else {
-        var backdrop = 'https://image.tmdb.org/t/p/w1280' + tmdbResponse.data.backdrop_path;
-    };
     
     var genres = [];
     tmdbResponse.data.genres.forEach((genre) => {
@@ -56,20 +49,26 @@ app.get('/movie', async (req, res) => {
     var runtime = tmdbResponse.data.runtime + ' min';
 
     const similarResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${tmdbApiKey}`);
-    const tmdbImages = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/images?api_key=${tmdbApiKey}`)
+    const tmdbImages = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/images?include_image_language=null&api_key=${tmdbApiKey}`)
+
+    if (tmdbImages.data.backdrops[0]) {
+        var backdrops=tmdbImages.data.backdrops.slice(0,10)
+    } else {
+        const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
+        var backdrops=[{file_path:ytsResponse.data.data.movie.background_image_original}];
+    };
     res.render('movie.ejs', {
         resultsSimilar: similarResponse.data.results,
-        backdrop: backdrop,
         title: title,
         imdb_rating: imdbResponse.data.imdbRating,
         year: year,
         genre1: genres[0],
         genre2: genres[1],
         runtime: runtime,
-        description: description,
+        description: description.slice(0,400),
         imdbId: imdbId,
         cast:tmdbResponse.data.credits.cast,
-        backdrops:tmdbImages.data.backdrops.slice(0,10)
+        backdrops:backdrops 
     });
 });
 

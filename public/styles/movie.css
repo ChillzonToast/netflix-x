@@ -14,7 +14,9 @@
     }
 }
 
-
+html {
+    scrollbar-width: none;
+}
 .outfit-light {
     color: #FFFFFF;
     font-family: "Outfit", sans-serif;
@@ -93,6 +95,7 @@ a {
 #hero img {
     user-select: none;
 }
+
 #slideshow {
     opacity: 60%;
     z-index: -2;
@@ -115,9 +118,8 @@ a {
 }
 #movie-info {
     width: 80%;
-    max-height: 40%;
     position: absolute;
-    bottom: 20%;
+    bottom: 10%;
     left:5%
 }
 
@@ -128,7 +130,7 @@ a {
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
-    font-size: 3.5rem;
+    font-size: 3.5em;
   }
 
 #movie-info ::selection {
@@ -142,7 +144,10 @@ a {
 #subinfo p {
     padding-right: 25px;
 }
-
+#subinfo a:hover {
+    text-decoration: underline;
+    text-decoration-color: white;
+}
 #description {
     width:50%;
 }
@@ -154,7 +159,7 @@ a {
     width: 38%;
     justify-content: space-around;
     position: absolute;
-    bottom: 22%;
+    bottom: 10%;
     right: 5%;
 }
 .watchDwn-button {
