@@ -79,4 +79,14 @@ app.get('/movie', async (req, res) => {
     });
 });
 
+app.get('/search/movie',async (req,res) => {
+    const tmdbSearch = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`);
+    res.render('search.ejs',{
+        searchResults:tmdbSearch.data.results,
+        query:req.query.query,
+        total_pages:tmdbSearch.data.total_pages,
+        page:req.query.page || 1
+    });
+});
+
 app.listen(port);

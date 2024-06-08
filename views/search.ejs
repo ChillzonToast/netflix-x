@@ -1,0 +1,44 @@
+<%- include('header.ejs' ,{page_title:`Search - ${query} -
+    Netflix-X`,movies:'white',tvShows:'secondary',myList:'secondary',style:'main'}) %>
+
+    <div id="intro" class="container my-3">
+        <h2>Search results for <%= query %> - Page <%= page %>
+        </h2>
+    </div>
+    <div id="search-results" class="container search-movies">
+        <div class="row">
+            <% searchResults.forEach((movie)=> { %>
+                <% if (movie.poster_path) {%>
+                    <div class="col-3">
+                        <a href="/movie?movie_id=<%= movie.id %>">
+                            <div class="movie">
+                                <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
+                                    class="m-2" alt="<%='Poster of' + movie.title %>">
+                                <p>
+                                    <%= movie.title %>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <% } %>
+                        <% }); %>
+        </div>
+    </div>
+    <div id="prevnext" class="container">
+        <% for (i=1;i<=total_pages;i++) {%>
+            <% if (i==page) {%>
+                <a href="/search/movie?query=<%= query %>&page=<%= i %>"><button type="button"
+                        class="btn btn-secondary">
+                        <%= i %>
+                    </button></a>
+                <% } else {%>
+                    <a href="/search/movie?query=<%= query %>&page=<%= i %>"><button type="button"
+                            class="btn btn-outline-secondary">
+                            <%= i %>
+                        </button></a>
+                    <% } %>
+                        <% } %>
+    </div>
+
+    <%- include('footer.ejs') %>
