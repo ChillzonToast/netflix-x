@@ -27,6 +27,24 @@
         </div>
     </div>
 </div>
+
+<div class="container mb-5">
+    <h2>Cast</h2>
+    <div id="Casts">
+        <% cast.forEach((member) => { %>
+            <% if (member.profile_path) {%>
+                <div class="cast">
+                    <div class="profile-pic">
+                        <img src="https://image.tmdb.org/t/p/w185/<%= member.profile_path %>">
+                    </div>
+                    <p class="cast-name"><%= member.name %></p>
+                    <p class="character-name"><%= member.character %></p>
+                </div>
+            <% } %>
+        <% }) %>
+    </div>
+</div>
+
 <div class="container my-3">
     <h3>More Like This</h3>
     <div class="movies d-inline-flex flex-row">

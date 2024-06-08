@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
 app.get('/movie', async (req, res) => {
     if (req.query.movie_id[0] != 't') {
         var tmdbId = req.query.movie_id;
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`);
+        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`);
         var imdbId = tmdbResponse.data.external_ids.imdb_id;
         var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
 
@@ -35,7 +35,7 @@ app.get('/movie', async (req, res) => {
         var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
         var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`);
         var tmdbId = tmdbResponse.data.movie_results[0].id;
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.data.movie_results[0].id}?api_key=${tmdbApiKey}`)
+        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.data.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)
 
     };
 
@@ -75,7 +75,8 @@ app.get('/movie', async (req, res) => {
         genre2: genres[1],
         runtime: runtime,
         description: description,
-        imdbId: imdbId
+        imdbId: imdbId,
+        cast:tmdbResponse.data.credits.cast
     });
 });
 

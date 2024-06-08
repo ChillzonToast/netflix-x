@@ -4,6 +4,23 @@
     }
 }
 
+.container {
+    background-color: #00000000;
+}
+
+body {
+    background-color: #12151C;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
 #intro { 
     text-align: center;
 }
@@ -29,6 +46,10 @@
     border-color: #FFFFFFFF;
 }
 
+.movies a {
+    color: white;
+}
+
 .movie {
     display: flex;
     flex-direction: column;
@@ -40,22 +61,12 @@
     color: #FFFFFF;
 }
 
-.container {
-    background-color: #00000000;
-}
-
-body {
-    background-color: #12151C;
-}
 
 .movies {
     border-radius: 20px;
     scrollbar-width: none;
     overflow-x: auto;
     width: 100%;
-}
-.movies a {
-    color: white;
 }
 .search-movies img {
     border-radius: 20px;
@@ -76,15 +87,6 @@ body {
 .search-movies a {
     color: #FFFFFF;
 }
-button {
-    background-color: #00000000;
-    border: 0px;
-}
-
-a {
-    text-decoration: none;
-}
-
 
 #search-results img {
     max-height: 300px;

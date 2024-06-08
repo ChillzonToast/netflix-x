@@ -5,6 +5,29 @@
 }
 
 
+@media (min-width:992px) {
+    header {
+        z-index: 2;
+        position: absolute;
+        top: 0;
+        width:100%;
+    }
+}
+
+
+.outfit-light {
+    color: #FFFFFF;
+    font-family: "Outfit", sans-serif;
+    font-weight: 200;
+}
+
+.outfit-semibold {
+    color:#FFFFFF;
+    font-family: "Outfit",sans-serif;
+    font-weight: 400;
+}
+
+
 #intro h2 { 
     text-align: center;
 }
@@ -19,20 +42,6 @@
     transform: translateY(-1000px);
 }
 
-.movies img {
-    border-radius: 20px;
-    width:  auto;
-    max-height: 300px;
-    border: 2px solid #FFFFFF4D;
-    transition: border-color 0.3s ease;
-}
-
-.movies img:hover{
-    border-color: #FFFFFFFF;
-}
-.movie p{
-    text-align: center;
-}
 
 .container {
     background-color: #00000000;
@@ -53,6 +62,21 @@ body {
     color: white;
 }
 
+.movies img {
+    border-radius: 20px;
+    width:  auto;
+    max-height: 300px;
+    border: 2px solid #FFFFFF4D;
+    transition: border-color 0.3s ease;
+}
+
+.movies img:hover{
+    border-color: #FFFFFFFF;
+}
+.movie p{
+    text-align: center;
+}
+
 button {
     background-color: #00000000;
     border: 0px;
@@ -69,14 +93,6 @@ a {
 #hero img {
     opacity: 60%;
     user-select: none;
-}
-@media (min-width:992px) {
-    header {
-        z-index: 2;
-        position: absolute;
-        top: 0;
-        width:100%;
-    }
 }
 
 #vignette-top {
@@ -122,18 +138,6 @@ a {
 }
 #subinfo p {
     padding-right: 25px;
-}
-
-.outfit-light {
-    color: #FFFFFF;
-    font-family: "Outfit", sans-serif;
-    font-weight: 200;
-}
-
-.outfit-semibold {
-    color:#FFFFFF;
-    font-family: "Outfit",sans-serif;
-    font-weight: 400;
 }
 
 #description {
@@ -182,4 +186,32 @@ a {
 
 .bookmark-button:hover {
     border-color: white;
+}
+
+#Casts {
+    text-align: center;
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+#Casts p {
+    margin: 0px;
+}
+
+.profile-pic img {
+    border-radius: 50%;
+    border: 2px solid #4d4d4d4d;
+    width:80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.character-name {
+    opacity: 70%;
+    font-size: smaller;
+    color:#d4d4d4
 }
