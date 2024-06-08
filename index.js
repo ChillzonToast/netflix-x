@@ -56,7 +56,7 @@ app.get('/movie', async (req, res) => {
     var runtime = tmdbResponse.data.runtime + ' min';
 
     const similarResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${tmdbApiKey}`);
-
+    const tmdbImages = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/images?api_key=${tmdbApiKey}`)
     res.render('movie.ejs', {
         resultsSimilar: similarResponse.data.results,
         backdrop: backdrop,
@@ -68,7 +68,8 @@ app.get('/movie', async (req, res) => {
         runtime: runtime,
         description: description,
         imdbId: imdbId,
-        cast:tmdbResponse.data.credits.cast
+        cast:tmdbResponse.data.credits.cast,
+        backdrops:tmdbImages.data.backdrops.slice(0,10)
     });
 });
 

@@ -1,7 +1,19 @@
 <%- include('header.ejs' ,{page_title:`${title} (${year}) - Netflix-X`,movies:'white',tvShows:'secondary',myList:'secondary',style:'movie'}) %>
 
 <div id="hero">
-    <img width="100%" draggable="false" src="<%= backdrop %>" alt="moviebg">
+    
+    <div id="slideshow" class="carousel slide carousel-fade" data-bs-ride="carousel" alt="<%= title %> image slideshow">
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="5000">
+                <img src="https://image.tmdb.org/t/p/original/<%= backdrops[0].file_path %>" class="d-block w-100">
+            </div>
+            <% backdrops.slice(1).forEach((backdrop) => { %>
+                <div class="carousel-item" data-bs-interval="5000">
+                    <img src="https://image.tmdb.org/t/p/original/<%= backdrop.file_path %>" class="d-block w-100">
+                </div>
+          <% }) %>
+        </div>
+    </div>
 
     <div id="vignette-top"></div>
     <div id="vignette-bottom"></div>
