@@ -125,4 +125,11 @@ app.get('/download/tpb',async (req,res) => {
     });
 });
 
+app.get('/stream/movie',(req,res) => {
+    res.render('stream.ejs',{
+        title:req.query.title,
+        id:req.query.imdb_id
+    })
+});
+
 app.listen(port);

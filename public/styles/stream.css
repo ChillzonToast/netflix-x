@@ -1,0 +1,73 @@
+html {
+    scrollbar-width: none;
+}
+
+a {
+    color: white;
+}
+
+
+.outfit-light {
+    color: #FFFFFF;
+    font-family: "Outfit", sans-serif;
+    font-weight: 200;
+}
+
+.outfit-bold {
+    color:#FFFFFF;
+    font-family: "Outfit",sans-serif;
+    font-weight: bold;
+}
+
+
+
+.container {
+    background-color: #00000000;
+}
+
+body {
+    background-color: #12151C;
+}
+
+.underline {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+.main-title {
+    font-weight: 400;
+    text-decoration-line: underline;
+    text-decoration-color: #E5091400;
+    text-underline-offset: 0px;
+    transition: text-decoration-color 0.3s, text-underline-offset 0.3s;
+}
+
+.main-title:hover {
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
+
+iframe {
+    border-radius: 20px;
+    width: 90%;
+    min-height: 500px;
+    border: 2px solid #ffffff22;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+iframe:hover {
+    border-color: #e5091486;
+    
+    box-shadow: 0 0 50px #e509142f;
+}

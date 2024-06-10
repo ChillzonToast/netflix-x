@@ -41,6 +41,18 @@ a {
     text-underline-offset: 10px;
 }
 
+.main-title {
+    font-weight: 400;
+    text-decoration-line: underline;
+    text-decoration-color: #E5091400;
+    text-underline-offset: 0px;
+    transition: text-decoration-color 0.3s, text-underline-offset 0.3s;
+}
+
+.main-title:hover {
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
 
 #yts-content {
     display: flex;

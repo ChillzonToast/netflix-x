@@ -33,7 +33,7 @@
     </div>
     <div id="watchDwnBook">
         <div class="outfit-semibold watchDwn-button">
-            <p>WATCH NOW</p>
+            <a href="/stream/movie?imdb_id=<%= imdbId %>&title=<%= title %>"><p>WATCH NOW</p></a>
         </div>
         <div class="outfit-semibold watchDwn-button">
             <a href="/download/movie?imdb_id=<%= imdbId %>&title=<%= title %> <%= year %>"><p>DOWNLOAD</p></a>
@@ -54,7 +54,7 @@
                         <img src="https://image.tmdb.org/t/p/w185/<%= member.profile_path %>">
                     </div>
                     <p class="cast-name"><%= member.name %></p>
-                    <p class="character-name"><%= member.character %></p>
+                    <p class="character-name">As <%= member.character %></p>
                 </div>
             <% } %>
         <% }) %>
