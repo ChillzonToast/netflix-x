@@ -35,6 +35,13 @@ a {
     text-decoration: none;
 }
 
+.underline {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
+
+
 #yts-content {
     display: flex;
     flex-direction: column;
@@ -88,3 +95,26 @@ a {
     width: 60%;
 }
 
+
+.tpb-logo {
+    border-radius: 10px;
+}
+
+
+tr * , thead {
+    border-color: #E50914;
+}
+
+.last-row {
+    border-bottom-color: #E50914;
+}
+
+table a {
+    color: white;
+}
+
+table a:hover {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 5px;
+}

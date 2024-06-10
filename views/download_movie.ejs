@@ -1,0 +1,91 @@
+<%- include('header.ejs' ,{page_title:`Download
+    ${title}`,moviesClasses:"underline",tvShowsClasses:"",myListClasses:"",style:'download'}) %>
+
+<% function format(text) {
+    return text.replace('&rsquo;','\'').replace('\\\'','\'')
+}; %>
+
+    <div id="yts-content" class="container">
+        <a href="https://yts.mx"><img src="/images/yts.png"></a>
+        <% if (ytsTorrents) { %>
+            <div class="yts-cards mt-4">
+                <% ytsTorrents.forEach((torrent)=> { %>
+                    <div class="yts-card">
+                        <p class="pt-2">Seeds: <%= torrent.seeds %> / Peers: <%= torrent.peers %>
+                        </p>
+                        <h2 class="outfit-bold m-0">
+                            <%= torrent.quality %>
+                        </h2>
+                        <h2 class="outfit-bold mb-3">
+                            <%= torrent.type %>
+                        </h2>
+                        <h4 class="outfit-light pb-2">Size : <%= torrent.size %>
+                        </h4>
+                        <div class="torrent-magnet pb-3">
+                            <a href="<%= torrent.url %>"><img src="/images/torrent.png"></a>
+                            <a
+                                href="magnet:?xt=urn:btih:<%= torrent.hash %>&dn=<%= title_long %> <%= torrent.quality %> <%= torrent.type %> [YTS.MX]&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.tracker.cl%3A1337%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.dler.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Fipv4.tracker.harry.lu%3A80%2Fannounce&tr=https%3A%2F%2Fopentracker.i2p.rocks%3A443%2Fannounce"><img
+                                    src="/images/magnet.png"></a>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+            <% } else { %>
+                <p class="mt-3">The torrents for this movie has not yet been uploaded to yts.mx</p>
+                <% } %>
+    </div>
+
+    <div id="pbay-content" class="container d-flex flex-column align-items-center">
+        <a href="https://pirate-proxy.black/"><img class="my-5 tpb-logo" width="100px" src="/images/tpb.jpg"></a>
+        <table class="table table-hover table-dark table-bordered">
+            <thead class="thead">
+                <tr class="table-red">
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Seeders</th>
+                    <th scope="col">Leechers</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Uploader</th>
+                    <th scope="col">Magnet</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                <% tpbResults.slice(0,-1).forEach((result,index) => { %>
+                    <tr>
+                        <th scope="row"><%= index+1 %></th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=<%= result.id %>&from=movies"><%= format(result.name) %></a></td>
+                        <td><%= result.seeders %></td>
+                        <td><%= result.leechers %></td>
+                        <% if ( Math.floor(result.size/(Math.pow(1024,3))) >= 1 ) { %>
+                            <td><%= Math.round((result.size *100)/(Math.pow(1024,3))) / 100 %> GiB</td>
+                        <% } else { %>
+                            <td><%= Math.round((result.size *100)/(Math.pow(1024,2))) / 100 %> MiB</td>
+                        <% } %>    
+                        <td><%= result.status %></td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:<%= result.info_hash %>&dn=<%= format(result.name) %>&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                    </tr>
+                <% }) %>
+                <tr class="last-row">
+                    <th scope="row"><%= tpbResults.length %></th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=<%= tpbResults[ tpbResults.length -1 ].id %>&from=movies"><%= format(tpbResults[ tpbResults.length -1 ].name) %></a></td>
+                        <td><%= tpbResults[ tpbResults.length -1 ].seeders %></td>
+                        <td><%= tpbResults[ tpbResults.length -1 ].leechers %></td>
+                        <% if ( Math.floor(tpbResults[ tpbResults.length -1 ].size/(Math.pow(1024,3))) >= 1 ) { %>
+                            <td><%= Math.round((tpbResults[ tpbResults.length -1 ].size *100)/(Math.pow(1024,3))) / 100 %> GiB</td>
+                        <% } else { %>
+                            <td><%= Math.round((tpbResults[ tpbResults.length -1 ].size *100)/(Math.pow(1024,2))) / 100 %> MiB</td>
+                        <% } %>    
+                        <td><%= tpbResults[ tpbResults.length -1 ].status %></td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:<%= tpbResults[ tpbResults.length -1 ].info_hash %>&dn=<%= format(tpbResults[ tpbResults.length -1 ].name) %>&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<%- include('footer.ejs') %>

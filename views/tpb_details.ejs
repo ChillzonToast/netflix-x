@@ -1,0 +1,73 @@
+<%- include('header.ejs' ,{page_title:`Download
+    ${tpbResponse.name}`,moviesClasses:moviesClasses,tvShowsClasses:tvShowsClasses,myListClasses:myListClasses,style:'tpb_details'}) %>
+
+<% function format(text) {
+    return text.replace('&rsquo;','\'').replace('\\\'','\'').replace('&amp;','&')
+}; %>
+
+<div class="container pb-2 bg-dark rounded">
+    <h3 class="outfit-bold py-3">
+        Details for: <%= format(tpbResponse.name) %>
+    </h3>
+    <p class="outfit-light m-0">Files: <%= tpbResponse.num_files %></p>
+    <% if ( Math.floor(tpbResponse.size/(Math.pow(1024,3))) >= 1 ) { %>
+        <p class="outfit-light m-0">Size: <%= Math.round((tpbResponse.size *100)/(Math.pow(1024,3))) / 100 %> GiB (<%= tpbResponse.size %> Bytes)</p>
+    <% } else { %>
+        <p class="outfit-light m-0">Size: <%= Math.round((tpbResponse.size *100)/(Math.pow(1024,2))) / 100 %> MiB (<%= tpbResponse.size %> Bytes)</p>
+    <% } %>    
+    
+    <br />
+    <p class="outfit-light m-0">Uploaded: <%= ("0" + (new Date(tpbResponse.added *1000)).getDay()).slice(-2) %>-<%= ("0" + ((new Date(tpbResponse.added *1000)).getMonth() +1)).slice(-2) %>-<%=(new Date(tpbResponse.added *1000)).getFullYear() %></p>
+    <p class="outfit-light m-0">By: <%= tpbResponse.username %> (<%= tpbResponse.status %>)</p>
+    <br />
+    <p class="outfit-light m-0">Seeders: <%= tpbResponse.seeders %></p>
+    <p class="outfit-light m-0">Leechers: <%= tpbResponse.leechers %></p>
+    <p class="outfit-light m-0">Info Hash: <%= tpbResponse.info_hash %></p>
+    <br />
+
+    <label id="d-magnet">
+        <a
+            href="magnet:?xt=urn:btih:<%= tpbResponse.info_hash %>&amp;dn=<%= tpbResponse.name %>&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&amp;tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce">
+            <img width="20px" src="/images/magnet.png"> Get This Torrent
+        </a>
+    </label>
+    <br />
+
+    <div class="container py-2 my-3 rounded details">
+        <p>
+            <% format(tpbResponse.descr).split('\n').forEach((element) => { %>
+                <%= element %><br />
+            <% }) %>
+        </p>
+    </div>
+    
+    <label id="d-magnet">
+        <a
+            href="magnet:?xt=urn:btih:<%= tpbResponse.info_hash %>&amp;dn=<%= tpbResponse.name %>&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&amp;tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&amp;tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&amp;tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&amp;tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce">
+            <img width="20px" src="/images/magnet.png"> Get This Torrent
+        </a>
+    </label>
+    <br />
+
+    <div class="container py-2 my-3 rounded details d-flex flex-column">
+        <% tpbFiles.forEach((file) => { %>
+        <div class="d-flex flex-row justify-content-between">
+            <div class="px-2"><%= file.name["0"] %></div><div class="px-2">
+                <% if ( Math.floor(file.size["0"]/(Math.pow(1024,3))) >= 1 ) { %>
+                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,3))) / 100 %> GiB
+                <% } else if (Math.round((file.size["0"] *100)/(Math.pow(1024,2))) / 100 >=1) { %>
+                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,2))) / 100 %> MiB
+                <% } else if (Math.round((file.size["0"] *100)/(Math.pow(1024,1))) / 100 >=1) { %>
+                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,1))) / 100 %> KiB
+                <% } else { %>
+                    <%= file.size["0"] %> B
+                <% } %>    
+            </div>
+        </div>
+        <% }) %>
+
+    </div>
+</div>
+
+
+<%- include('footer.ejs') %>

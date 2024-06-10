@@ -58,6 +58,13 @@ body {
     background-color: #12151C;
 }
 
+.underline {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
+
+
 .movies {
     border-radius: 20px;
     scrollbar-width: none;
@@ -172,12 +179,12 @@ a {
     background-color: #1B222C;
     text-align: center;
     border-radius: 40px;
-    border: 2px solid #00000000;
+    border: 2px solid #ffffffa8;
     transition: border-color 0.3s ease;
 }
 
 .watchDwn-button:hover {
-    border-color: white;
+    border-color: #E50914;
 }
 
 .watchDwn-button p {
@@ -192,13 +199,13 @@ a {
     flex:1;
     background-color: #1B222C;
     border-radius: 50%;
-    border: 2px solid #00000000;
+    border: 2px solid #ffffffa8;
     transition: border-color 0.3s ease;
     text-align: center;
 }
 
 .bookmark-button:hover {
-    border-color: white;
+    border-color: #E50914;
 }
 
 #Casts {

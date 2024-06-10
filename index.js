@@ -85,10 +85,37 @@ app.get('/search/movie',async (req,res) => {
 app.get('/download/movie',async (req,res) => {
     const imdbId = req.query.imdb_id;
     const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
-    res.render('download.ejs',{
+    const tpbResponse = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${imdbId}`);
+    res.render('download_movie.ejs',{
         ytsTorrents:ytsResponse.data.data.movie.torrents,
         title:ytsResponse.data.data.movie.title_english,
-        title_long:ytsResponse.data.data.movie.title_long
+        title_long:ytsResponse.data.data.movie.title_long,
+        tpbResults:tpbResponse.data
+    });
+});
+
+app.get('/download/tpb',async (req,res) => {
+    const tpbResponse = await axios.get(`https://pirate-proxy.black/newapi/t.php?id=${req.query.tpbId}`);
+    const tpbFiles = await axios.get(`https://pirate-proxy.black/newapi/f.php?id=${req.query.tpbId}`);
+
+    var moviesClasses = "";
+    var tvShowsClasses = "";
+    var myListClasses = "";
+    if (req.query.from == 'movies') {
+        moviesClasses = "underline"
+    } else if (req.query.from == 'tvShows') {
+        tvShowsClasses = "underline"
+    } else if (req.query.from == 'myList') {
+        myListClasses = "underline"
+    };
+
+    res.render('tpb_details.ejs',{
+        tpbResponse:tpbResponse.data,
+        tpbFiles:tpbFiles.data,
+        myListClasses:myListClasses,
+        tvShowsClasses:tvShowsClasses,
+        moviesClasses:moviesClasses,
+        tpbId:req.query.tpbId
     });
 });
 

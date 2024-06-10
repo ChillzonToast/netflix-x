@@ -1,0 +1,61 @@
+
+#main-sections img {
+    filter: drop-shadow(0px 1000px 0 #FFFFFF);
+    transform: translateY(-1000px);
+}
+
+.outfit-light {
+    color: #FFFFFF;
+    font-family: "Outfit", sans-serif;
+    font-weight: 200;
+}
+
+.outfit-bold {
+    color:#FFFFFF;
+    font-family: "Outfit",sans-serif;
+    font-weight: normal;
+}
+
+
+.container {
+    background-color: #00000000;
+}
+
+body {
+    background-color: #12151C;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.underline {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
+
+
+.tpb-logo {
+    border-radius: 1px;
+}
+
+#d-magnet a {
+    text-transform: uppercase;
+    font:1em Verdana,Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+#d-magnet a:hover {
+    color: #E50914;
+}
+
+.details {
+    background-color: rgb(47, 53, 58);
+}
