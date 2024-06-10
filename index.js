@@ -86,11 +86,17 @@ app.get('/download/movie',async (req,res) => {
     const imdbId = req.query.imdb_id;
     const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
     const tpbResponse = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${imdbId}`);
+    const tpbResponse720p = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 720p`);
+    const tpbResponse1080p = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 1080p`);
+    const tpbResponse4k = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 2160p`);
     res.render('download_movie.ejs',{
         ytsTorrents:ytsResponse.data.data.movie.torrents,
-        title:ytsResponse.data.data.movie.title_english,
+        title:req.query.title,
         title_long:ytsResponse.data.data.movie.title_long,
-        tpbResults:tpbResponse.data
+        tpbResults:tpbResponse.data,
+        tpbResults720p:tpbResponse720p.data,
+        tpbResults1080p:tpbResponse1080p.data,
+        tpbResults4k:tpbResponse4k.data
     });
 });
 

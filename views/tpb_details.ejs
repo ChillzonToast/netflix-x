@@ -2,8 +2,21 @@
     ${tpbResponse.name}`,moviesClasses:moviesClasses,tvShowsClasses:tvShowsClasses,myListClasses:myListClasses,style:'tpb_details'}) %>
 
 <% function format(text) {
-    return text.replace('&rsquo;','\'').replace('\\\'','\'').replace('&amp;','&')
-}; %>
+    return text.replaceAll('&rsquo;','\'').replaceAll('\\\'','\'').replaceAll('&amp;','&').replaceAll('&gt;','>').replaceAll('&lt;','<')
+}; 
+
+function formatBytes(bytes) {
+    if ( Math.floor(bytes/(Math.pow(1024,3))) >= 1 ) {
+                return (Math.round((bytes *100)/(Math.pow(1024,3))) / 100 + ' GiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 + ' MiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 + ' KiB')
+            } else { 
+                return (bytes + ' B')
+            }   
+};
+%>
 
 <div class="container pb-2 bg-dark rounded">
     <h3 class="outfit-bold py-3">
@@ -53,15 +66,7 @@
         <% tpbFiles.forEach((file) => { %>
         <div class="d-flex flex-row justify-content-between">
             <div class="px-2"><%= file.name["0"] %></div><div class="px-2">
-                <% if ( Math.floor(file.size["0"]/(Math.pow(1024,3))) >= 1 ) { %>
-                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,3))) / 100 %> GiB
-                <% } else if (Math.round((file.size["0"] *100)/(Math.pow(1024,2))) / 100 >=1) { %>
-                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,2))) / 100 %> MiB
-                <% } else if (Math.round((file.size["0"] *100)/(Math.pow(1024,1))) / 100 >=1) { %>
-                    <%= Math.round((file.size["0"] *100)/(Math.pow(1024,1))) / 100 %> KiB
-                <% } else { %>
-                    <%= file.size["0"] %> B
-                <% } %>    
+                   <%= formatBytes(file.size["0"]) %>
             </div>
         </div>
         <% }) %>

@@ -2,8 +2,32 @@
     ${title}`,moviesClasses:"underline",tvShowsClasses:"",myListClasses:"",style:'download'}) %>
 
 <% function format(text) {
-    return text.replace('&rsquo;','\'').replace('\\\'','\'')
-}; %>
+    return text.replaceAll('&rsquo;','\'').replaceAll('\\\'','\'').replaceAll('&gt;','>').replaceAll('&lt;','<')
+}; 
+
+function objToString (obj) {
+    var str = '';
+    for (var p in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, p)) {
+            str += p + '::' + obj[p] + '\n';
+        }
+    }
+    return str;
+}
+
+function formatBytes(bytes) {
+    if ( Math.floor(bytes/(Math.pow(1024,3))) >= 1 ) {
+                return (Math.round((bytes *100)/(Math.pow(1024,3))) / 100 + ' GiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 + ' MiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 + ' KiB')
+            } else { 
+                return (bytes + ' B')
+            }   
+};
+
+%>
 
     <div id="yts-content" class="container">
         <a href="https://yts.mx"><img src="/images/yts.png"></a>
@@ -36,7 +60,19 @@
     </div>
 
     <div id="pbay-content" class="container d-flex flex-column align-items-center">
-        <a href="https://pirate-proxy.black/"><img class="my-5 tpb-logo" width="100px" src="/images/tpb.jpg"></a>
+        <a class="my-5" href="https://pirate-proxy.black/"><img class="tpb-logo" width="100px" src="/images/tpb.jpg"></a>
+        <div class="dropdown mb-4">
+            <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Quality
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item <% if (tpbResults[0].size == '0') { %><%= 'disabled' %><% }%>" onclick="tpbAll()">All</a></li>
+              <li><a class="dropdown-item <% if (tpbResults720p[0].size == '0') { %><%= 'disabled' %><% }%>" onclick="tpb720p()">720p</a></li>
+              <li><a class="dropdown-item <% if (tpbResults1080p[0].size == '0') { %><%= 'disabled' %><% }%>" onclick="tpb1080p()">1080p</a></li>
+              <li><a class="dropdown-item <% if (tpbResults4k[0].size == '0') { %><%= 'disabled' %><% }%>" onclick="tpb4k()">2160p (4k)</a></li>
+            </ul>
+          </div>
         <table class="table table-hover table-dark table-bordered">
             <thead class="thead">
                 <tr class="table-red">
@@ -56,11 +92,7 @@
                         <td class="column-name"><a href="/download/tpb?tpbId=<%= result.id %>&from=movies"><%= format(result.name) %></a></td>
                         <td><%= result.seeders %></td>
                         <td><%= result.leechers %></td>
-                        <% if ( Math.floor(result.size/(Math.pow(1024,3))) >= 1 ) { %>
-                            <td><%= Math.round((result.size *100)/(Math.pow(1024,3))) / 100 %> GiB</td>
-                        <% } else { %>
-                            <td><%= Math.round((result.size *100)/(Math.pow(1024,2))) / 100 %> MiB</td>
-                        <% } %>    
+                        <td><%= formatBytes(result.size) %></td>                       
                         <td><%= result.status %></td>
                         <td>
                             <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:<%= result.info_hash %>&dn=<%= format(result.name) %>&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
@@ -73,11 +105,7 @@
                         <td class="column-name"><a href="/download/tpb?tpbId=<%= tpbResults[ tpbResults.length -1 ].id %>&from=movies"><%= format(tpbResults[ tpbResults.length -1 ].name) %></a></td>
                         <td><%= tpbResults[ tpbResults.length -1 ].seeders %></td>
                         <td><%= tpbResults[ tpbResults.length -1 ].leechers %></td>
-                        <% if ( Math.floor(tpbResults[ tpbResults.length -1 ].size/(Math.pow(1024,3))) >= 1 ) { %>
-                            <td><%= Math.round((tpbResults[ tpbResults.length -1 ].size *100)/(Math.pow(1024,3))) / 100 %> GiB</td>
-                        <% } else { %>
-                            <td><%= Math.round((tpbResults[ tpbResults.length -1 ].size *100)/(Math.pow(1024,2))) / 100 %> MiB</td>
-                        <% } %>    
+                        <td><%= formatBytes( tpbResults[ tpbResults.length -1 ].size ) %></td>  
                         <td><%= tpbResults[ tpbResults.length -1 ].status %></td>
                         <td>
                             <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:<%= tpbResults[ tpbResults.length -1 ].info_hash %>&dn=<%= format(tpbResults[ tpbResults.length -1 ].name) %>&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
@@ -87,5 +115,105 @@
             </tbody>
         </table>
     </div>
+<script>
+function format(text) {
+    return text.replaceAll('&rsquo;','\'').replaceAll('\\\'','\'').replaceAll('&gt;','>').replaceAll('&lt;','<')
+}; 
 
+function formatBytes(bytes) {
+    if ( Math.floor(bytes/(Math.pow(1024,3))) >= 1 ) {
+                return (Math.round((bytes *100)/(Math.pow(1024,3))) / 100 + ' GiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,2))) / 100 + ' MiB')
+            } else if (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 >=1) {
+                return (Math.round((bytes *100)/(Math.pow(1024,1))) / 100 + ' KiB')
+            } else { 
+                return (bytes + ' B')
+            }   
+};
+function decodeHTMLEntities(text) {
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    return textArea.value;
+}
+
+    var tpbResults = JSON.parse(decodeHTMLEntities('<%= JSON.stringify(tpbResults) %>'));
+
+    async function tpbAll() {
+        $('tbody').html('');
+        tpbResults = JSON.parse(decodeHTMLEntities('<%= JSON.stringify(tpbResults) %>'));
+        tpbResults.forEach((result,index) => {
+            $('tbody').append(`<tr>
+                        <th scope="row">${ index+1 }</th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=${ result.id }&from=movies">${ format(result.name) }</a></td>
+                        <td>${ result.seeders }</td>
+                        <td>${ result.leechers }</td>
+                        <td>${ formatBytes(result.size) }</td>                       
+                        <td>${ result.status }</td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:${ result.info_hash }&dn=${ format(result.name) }&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                    </tr>`)
+        })
+        $('tbody > tr:last').addClass('last-row')
+    }
+    async function tpb720p() {
+        $('tbody').html('');
+        tpbResults = JSON.parse(decodeHTMLEntities('<%= JSON.stringify(tpbResults720p) %>'));
+        tpbResults.forEach((result,index) => {
+            $('tbody').append(`<tr>
+                        <th scope="row">${ index+1 }</th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=${ result.id }&from=movies">${ format(result.name) }</a></td>
+                        <td>${ result.seeders }</td>
+                        <td>${ result.leechers }</td>
+                        <td>${ formatBytes(result.size) }</td>                       
+                        <td>${ result.status }</td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:${ result.info_hash }&dn=${ format(result.name) }&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                    </tr>`)
+        })
+        $('tbody > tr:last').addClass('last-row')
+    }
+    async function tpb1080p() {
+        $('tbody').html('');
+        tpbResults = JSON.parse(decodeHTMLEntities('<%= JSON.stringify(tpbResults1080p) %>'));
+        tpbResults.forEach((result,index) => {
+            $('tbody').append(`<tr>
+                        <th scope="row">${ index+1 }</th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=${ result.id }&from=movies">${ format(result.name) }</a></td>
+                        <td>${ result.seeders }</td>
+                        <td>${ result.leechers }</td>
+                        <td>${ formatBytes(result.size) }</td>                       
+                        <td>${ result.status }</td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:${ result.info_hash }&dn=${ format(result.name) }&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                    </tr>`)
+        })
+        $('tbody > tr:last').addClass('last-row')
+    }
+    async function tpb4k() {
+        $('tbody').html('');
+        tpbResults = JSON.parse(decodeHTMLEntities('<%= JSON.stringify(tpbResults4k) %>'));
+        tpbResults.forEach((result,index) => {
+            $('tbody').append(`<tr>
+                        <th scope="row">${ index+1 }</th>
+                        <td class="column-name"><a href="/download/tpb?tpbId=${ result.id }&from=movies">${ format(result.name) }</a></td>
+                        <td>${ result.seeders }</td>
+                        <td>${ result.leechers }</td>
+                        <td>${ formatBytes(result.size) }</td>                       
+                        <td>${ result.status }</td>
+                        <td>
+                            <div class="d-flex justify-content-center"><a href="magnet:?xt=urn:btih:${ result.info_hash }&dn=${ format(result.name) }&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2F9.rarbg.me%3A2780%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2730%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=http%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"><img width="20px"
+                                        src="/images/magnet.png"></a></div>
+                        </td>
+                    </tr>`)
+        })
+        $('tbody > tr:last').addClass('last-row')
+    }
+</script>
 <%- include('footer.ejs') %>
