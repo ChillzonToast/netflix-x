@@ -16,32 +16,6 @@
     font-weight: normal;
 }
 
-
-.container {
-    background-color: #00000000;
-}
-
-body {
-    background-color: #12151C;
-}
-
-button {
-    background-color: #00000000;
-    border: 0px;
-}
-
-a {
-    text-decoration: none;
-    color:#FFFFFF
-}
-
-.underline {
-    text-decoration-line: underline;
-    text-decoration-color: #E50914;
-    text-underline-offset: 10px;
-}
-
-
 .tpb-logo {
     border-radius: 1px;
 }

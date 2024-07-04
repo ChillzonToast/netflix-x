@@ -1,0 +1,29 @@
+html {
+    scrollbar-width: none;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+
+body {
+    background-color: #12151C;
+}
+
+button {
+    background-color: #00000000;
+    border: 0px;
+}
+
+.container {
+    background-color: #00000000;
+}
+
+
+.underline {
+    text-decoration-line: underline;
+    text-decoration-color: #E50914;
+    text-underline-offset: 10px;
+}
