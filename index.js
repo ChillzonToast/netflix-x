@@ -12,62 +12,77 @@ const imdbApiKey = secrets.imdbApiKey;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Function to fetch data from a URL
+const fetchData = async (url) => {
+    const response = await axios.get(url);
+    return response.data;
+};
+
 app.get('/', async (req, res) => {
-    const popularResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`);
-    const topRatedResponse = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbApiKey}`);
-    const ytsNewReleasesResponse = await axios.get('https://yts.mx/api/v2/list_movies.json?sort_by=date_added');
+    try {
+        var [popularResponse,topRatedResponse,ytsNewReleasesResponse] = await Promise.all([
+            fetchData(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`),
+            fetchData(`https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbApiKey}`),
+            fetchData('https://yts.mx/api/v2/list_movies.json?sort_by=date_added')
+        ]);
+    } catch (error) {
+        app.send(500);
+        console.log(error)
+    }
     res.render('index.ejs', {
-        resultsPopular: popularResponse.data.results,
-        resultsTopRated: topRatedResponse.data.results,
-        resultsNewlyAdded: ytsNewReleasesResponse.data.data.movies,
+        resultsPopular: popularResponse.results,
+        resultsTopRated: topRatedResponse.results,
+        resultsNewlyAdded: ytsNewReleasesResponse.data.movies,
     });
 });
 
 app.get('/movie', async (req, res) => {
     if (req.query.movie_id[0] != 't') {
         var tmdbId = req.query.movie_id;
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`);
-        var imdbId = tmdbResponse.data.external_ids.imdb_id;
-        var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
-
+        var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)).data;
+        var imdbId = tmdbResponse.external_ids.imdb_id;
+        var imdbResponse = (await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)).data;
     } else {
         var imdbId = req.query.movie_id;
-        var imdbResponse = await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`);
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`);
-        var tmdbId = tmdbResponse.data.movie_results[0].id;
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.data.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)
-
+        var [imdbResponse,tmdbResponse] = await Promise.all([
+            fetchData(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`),
+            fetchData(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`)
+        ]);
+        var tmdbId = tmdbResponse.movie_results[0].id;
+        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)
     };
     
     var genres = [];
-    tmdbResponse.data.genres.forEach((genre) => {
+    tmdbResponse.genres.forEach((genre) => {
         genres.push(genre.name);
     });
-    var title = tmdbResponse.data.title;
-    var description = tmdbResponse.data.overview;
-    var year = tmdbResponse.data.release_date.slice(0, 4);
-    var runtime = tmdbResponse.data.runtime + ' min';
+    var title = tmdbResponse.title;
+    var description = tmdbResponse.overview;
+    var year = tmdbResponse.release_date.slice(0, 4);
+    var runtime = tmdbResponse.runtime + ' min';
 
-    const similarResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${tmdbApiKey}`);
-    const tmdbImages = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/images?include_image_language=null&api_key=${tmdbApiKey}`)
+    const [similarResponse,tmdbImages] = await Promise.all([
+        fetchData(`https://api.themoviedb.org/3/movie/${tmdbId}/recommendations?api_key=${tmdbApiKey}`),
+        fetchData(`https://api.themoviedb.org/3/movie/${tmdbId}/images?include_image_language=null&api_key=${tmdbApiKey}`)
+    ]);
 
-    if (tmdbImages.data.backdrops[0]) {
-        var backdrops=tmdbImages.data.backdrops.slice(0,10)
+    if (tmdbImages.backdrops[0]) {
+        var backdrops=tmdbImages.backdrops.slice(0,10)
     } else {
         const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
         var backdrops=[{file_path:ytsResponse.data.data.movie.background_image_original}];
     };
     res.render('movie.ejs', {
-        resultsSimilar: similarResponse.data.results,
+        resultsSimilar: similarResponse.results,
         title: title,
-        imdb_rating: imdbResponse.data.imdbRating,
+        imdb_rating: imdbResponse.imdbRating,
         year: year,
         genre1: genres[0],
         genre2: genres[1],
         runtime: runtime,
         description: description.slice(0,400),
         imdbId: imdbId,
-        cast:tmdbResponse.data.credits.cast,
+        cast:tmdbResponse.credits.cast,
         backdrops:backdrops 
     });
 });
@@ -82,27 +97,46 @@ app.get('/search/movie',async (req,res) => {
     });
 });
 
-app.get('/download/movie',async (req,res) => {
-    const imdbId = req.query.imdb_id;
-    const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
-    const tpbResponse = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${imdbId}`);
-    const tpbResponse720p = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 720p`);
-    const tpbResponse1080p = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 1080p`);
-    const tpbResponse4k = await axios.get(`https://pirate-proxy.black/newapi/q.php?q=${req.query.title} 2160p`);
-    res.render('download_movie.ejs',{
-        ytsTorrents:ytsResponse.data.data.movie.torrents,
-        title:req.query.title,
-        title_long:ytsResponse.data.data.movie.title_long,
-        tpbResults:tpbResponse.data,
-        tpbResults720p:tpbResponse720p.data,
-        tpbResults1080p:tpbResponse1080p.data,
-        tpbResults4k:tpbResponse4k.data
-    });
+app.get('/download/movie', async (req, res) => {
+    try {
+        const { imdb_id, title } = req.query;
+        const ytsUrl = `https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`;
+        const tpbBaseUrl = `https://pirate-proxy.black/newapi/q.php?q=`;
+
+        // Initiate all requests in parallel
+        const [ytsResponse, tpbResults, tpbResults720p, tpbResults1080p, tpbResults4k] = await Promise.all([
+            fetchData(ytsUrl),
+            fetchData(`${tpbBaseUrl}${imdb_id}`),
+            fetchData(`${tpbBaseUrl}${title} 720p`),
+            fetchData(`${tpbBaseUrl}${title} 1080p`),
+            fetchData(`${tpbBaseUrl}${title} 2160p`)
+        ]);
+
+        // Extract data from YTS response
+        const ytsTorrents = ytsResponse.data.movie.torrents;
+        const titleLong = ytsResponse.data.movie.title_long;
+
+        // Render the response with fetched data
+        res.render('download_movie.ejs', {
+            ytsTorrents,
+            title,
+            title_long: titleLong,
+            tpbResults,
+            tpbResults720p,
+            tpbResults1080p,
+            tpbResults4k
+        });
+    } catch (error) {
+        console.error('Error fetching movie data:', error);
+        res.status(500).send('Error fetching movie data');
+    }
 });
 
 app.get('/download/tpb',async (req,res) => {
-    const tpbResponse = await axios.get(`https://pirate-proxy.black/newapi/t.php?id=${req.query.tpbId}`);
-    const tpbFiles = await axios.get(`https://pirate-proxy.black/newapi/f.php?id=${req.query.tpbId}`);
+    const [tpbResponse,tpbFiles] = await Promise.all([
+        fetchData(`https://pirate-proxy.black/newapi/t.php?id=${req.query.tpbId}`),
+        fetchData(`https://pirate-proxy.black/newapi/f.php?id=${req.query.tpbId}`)
+    ]);
 
     var moviesClasses = "";
     var tvShowsClasses = "";
@@ -116,8 +150,8 @@ app.get('/download/tpb',async (req,res) => {
     };
 
     res.render('tpb_details.ejs',{
-        tpbResponse:tpbResponse.data,
-        tpbFiles:tpbFiles.data,
+        tpbResponse:tpbResponse,
+        tpbFiles:tpbFiles,
         myListClasses:myListClasses,
         tvShowsClasses:tvShowsClasses,
         moviesClasses:moviesClasses,
@@ -133,3 +167,4 @@ app.get('/stream/movie',(req,res) => {
 });
 
 app.listen(port);
+console.log('App running on port 3000.')
