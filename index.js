@@ -9,6 +9,8 @@ const port = 3000;
 const tmdbApiKey = secrets.tmdbApiKey;
 const imdbApiKey = secrets.imdbApiKey;
 
+const ytsBaseUrl = "https://yts.mx";
+
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -23,17 +25,17 @@ app.get('/', async (req, res) => {
         var [popularResponse,topRatedResponse,ytsNewReleasesResponse] = await Promise.all([
             fetchData(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`),
             fetchData(`https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbApiKey}`),
-            fetchData('https://yts.mx/api/v2/list_movies.json?sort_by=date_added')
+            fetchData(`${ytsBaseUrl}/api/v2/list_movies.json?sort_by=date_added`)
         ]);
+        res.render('index.ejs', {
+            resultsPopular: popularResponse.results,
+            resultsTopRated: topRatedResponse.results,
+            resultsNewlyAdded: ytsNewReleasesResponse.data.movies,
+        });
     } catch (error) {
-        app.send(500);
+        res.send(500);
         console.log(error)
-    }
-    res.render('index.ejs', {
-        resultsPopular: popularResponse.results,
-        resultsTopRated: topRatedResponse.results,
-        resultsNewlyAdded: ytsNewReleasesResponse.data.movies,
-    });
+    };
 });
 
 app.get('/movie', async (req, res) => {
@@ -69,7 +71,7 @@ app.get('/movie', async (req, res) => {
     if (tmdbImages.backdrops[0]) {
         var backdrops=tmdbImages.backdrops.slice(0,10)
     } else {
-        const ytsResponse = await axios.get(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdbId}`);
+        const ytsResponse = await axios.get(`${ytsBaseUrl}/api/v2/movie_details.json?imdb_id=${imdbId}`);
         var backdrops=[{file_path:ytsResponse.data.data.movie.background_image_original}];
     };
     res.render('movie.ejs', {
@@ -100,7 +102,7 @@ app.get('/search/movie',async (req,res) => {
 app.get('/download/movie', async (req, res) => {
     try {
         const { imdb_id, title } = req.query;
-        const ytsUrl = `https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`;
+        const ytsUrl = `${ytsBaseUrl}/api/v2/movie_details.json?imdb_id=${imdb_id}`;
         const tpbBaseUrl = `https://pirate-proxy.black/newapi/q.php?q=`;
 
         // Initiate all requests in parallel
