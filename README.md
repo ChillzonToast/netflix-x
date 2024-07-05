@@ -6,12 +6,10 @@ A project I am developing solely for educational purposes. This is my second Cap
 
 ## Installation
 
-The project uses OMDB api and TMDB api for fetching data. Create a secrets.json file in the home directory containing the api keys in the format:
+The project uses OMDB api and TMDB api for fetching data. Create a .env file in the home directory containing the api keys in the format:
 ```
-{
-    "imdbApiKey":"YOUR_OMDB_API_KEY",
-    "tmdbApiKey":"YOUR_TMDB_API_KEY"
-}
+omdbApiKey=YOUR_OMDB_API_KEY
+tmdbApiKey=YOUR_TMDB_API_KEY
 ```
 Install the packages using npm:
 ```
