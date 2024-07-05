@@ -8,16 +8,13 @@
       <span class="mb-3 mb-md-0 text-body-secondary">© 2024 Company, Inc</span>
     </div>
   </footer>
-  <div id="loading">
-    <div class="d-flex justify-content-center align-items-center py-4">
-        <div style="width:36px;height: 36px;" class="d-flex mt-1 mx-2"><div class="lds-ring" ><div style="color: #E50914;"></div><div></div><div></div><div></div></div></div>
-        <a class="m-2">Loading</a>
-    </div>
-</div>
+  <div id="loadingV2" class="hide">
+    <div class="loading-big"></div><div class="loading-small"></div>
+  </div>
 <script>
     function showLoader() {
-        document.querySelector('#loading').classList.add('show');
-    };
+        $('#loadingV2').removeClass('hide');
+    }
     $('.movie').click(showLoader);
     $('.watchDwn-button').click(showLoader);
     $('table a').click(showLoader);

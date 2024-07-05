@@ -1,13 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
-import secrets from './secrets.json' assert {type:'json'};
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
 
-const tmdbApiKey = secrets.tmdbApiKey;
-const imdbApiKey = secrets.imdbApiKey;
+const tmdbApiKey = process.env.tmdbApiKey;
+const imdbApiKey = process.env.imdbApiKey;
 
 const ytsBaseUrl = "https://yts.mx";
 
