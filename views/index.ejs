@@ -42,7 +42,7 @@
         <% resultsNewlyAdded.forEach((movie)=> { %>
             <a href="/movie?movie_id=<%= movie.imdb_code %>">
                 <div class="movie">
-                    <img src="<%= movie.medium_cover_image %>" class="m-2" alt="<%='Poster of' + movie.title %>">
+                    <img src="<%= movie.medium_cover_image %>" class="m-2" alt="<%='Poster of ' + movie.title %>">
                     <p>
                         <%= movie.title %>
                     </p>

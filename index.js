@@ -51,7 +51,7 @@ app.get('/movie', async (req, res) => {
             fetchData(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`)
         ]);
         var tmdbId = tmdbResponse.movie_results[0].id;
-        var tmdbResponse = await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)
+        var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)).data;
     };
     
     var genres = [];
@@ -60,6 +60,9 @@ app.get('/movie', async (req, res) => {
     });
     var title = tmdbResponse.title;
     var description = tmdbResponse.overview;
+    if (description.length > 400) {
+        description = description.slice(0,400) + "...";
+    };
     var year = tmdbResponse.release_date.slice(0, 4);
     var runtime = tmdbResponse.runtime + ' min';
 
@@ -82,7 +85,7 @@ app.get('/movie', async (req, res) => {
         genre1: genres[0],
         genre2: genres[1],
         runtime: runtime,
-        description: description.slice(0,400),
+        description: description,
         imdbId: imdbId,
         cast:tmdbResponse.credits.cast,
         backdrops:backdrops 

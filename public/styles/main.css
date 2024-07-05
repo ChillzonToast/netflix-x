@@ -24,6 +24,8 @@
     max-height: 300px;
     border: 2px solid #FFFFFF4D;
     transition: border-color 0.3s ease;
+    min-width: 200px;
+    min-height: 300px;
 }
 
 .movies img:hover{
