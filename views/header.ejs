@@ -28,11 +28,15 @@
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#" class="nav-link px-2 text-white <%= moviesClasses %>">MOVIES</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white <%= tvShowsClasses %>">TV SHOWS</a></li>
+                    <li><a href="/movies" class="nav-link px-2 text-white <%= moviesClasses %>">MOVIES</a></li>
+                    <li><a href="/tvs" class="nav-link px-2 text-white <%= tvShowsClasses %>">TV SHOWS</a></li>
                     <li><a href="#" class="nav-link px-2 text-white <%= myListClasses %>">MY LIST</a></li>
                 </ul>
-
+                <% if (moviesClasses) { %>
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/search/movie" role="search">
+                <% } else { %>
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/search/tv" role="search">
+                <% } %>
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/search/movie" role="search">
                     <input type="search" name="query" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
                         aria-label="Search">

@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 
 const tmdbApiKey = process.env.tmdbApiKey;
-const imdbApiKey = process.env.imdbApiKey;
+const imdbApiKey = process.env.omdbApiKey;
 
 const ytsBaseUrl = "https://yts.mx";
 
@@ -21,8 +21,11 @@ const fetchData = async (url) => {
     const response = await axios.get(url);
     return response.data;
 };
+app.get('/', (req,res) => {
+    res.redirect('/movies')
+});
 
-app.get('/', async (req, res) => {
+app.get('/movies', async (req, res) => {
     try {
         var [popularResponse,topRatedResponse,ytsNewReleasesResponse] = await Promise.all([
             fetchData(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdbApiKey}`),
@@ -33,6 +36,30 @@ app.get('/', async (req, res) => {
             resultsPopular: popularResponse.results,
             resultsTopRated: topRatedResponse.results,
             resultsNewlyAdded: ytsNewReleasesResponse.data.movies,
+            myListClasses:"",
+            tvShowsClasses:"",
+            moviesClasses:"underline"
+        });
+    } catch (error) {
+        res.send(500);
+        console.log(error)
+    };
+});
+
+app.get('/tvs', async (req, res) => {
+    try {
+        var [popularResponse,topRatedResponse,newReleasesResponse] = await Promise.all([
+            fetchData(`https://api.themoviedb.org/3/tv/popular?api_key=${tmdbApiKey}`),
+            fetchData(`https://api.themoviedb.org/3/tv/top_rated?api_key=${tmdbApiKey}`),
+            fetchData(`https://api.themoviedb.org/3/tv/on_the_air?api_key=${tmdbApiKey}`)
+        ]);
+        res.render('index.ejs', {
+            resultsPopular: popularResponse.results,
+            resultsTopRated: topRatedResponse.results,
+            resultsNewlyAdded: newReleasesResponse.results,
+            myListClasses:"",
+            tvShowsClasses:"underline",
+            moviesClasses:""
         });
     } catch (error) {
         res.send(500);
@@ -90,9 +117,51 @@ app.get('/movie', async (req, res) => {
         description: description,
         imdbId: imdbId,
         cast:tmdbResponse.credits.cast,
-        backdrops:backdrops 
+        backdrops:backdrops,
+        myListClasses:"",
+        tvShowsClasses:"",
+        moviesClasses:"underline"
     });
 });
+
+app.get('/tv', async (req, res) => {
+    var tmdbId = req.query.tv_id;
+    var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)).data;
+    var imdbId = tmdbResponse.external_ids.imdb_id;
+    var imdbResponse = (await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)).data;
+    var genres = [];
+    tmdbResponse.genres.forEach((genre) => {
+        genres.push(genre.name);
+    });
+    var description = tmdbResponse.overview;
+    if (description.length > 400) {
+        description = description.slice(0,400) + "...";
+    };
+    var year = tmdbResponse.first_air_date.slice(0, 4) + "-" + tmdbResponse.last_air_date.slice(0, 4);
+
+    const [similarResponse,tmdbImages] = await Promise.all([
+        fetchData(`https://api.themoviedb.org/3/tv/${tmdbId}/recommendations?api_key=${tmdbApiKey}`),
+        fetchData(`https://api.themoviedb.org/3/tv/${tmdbId}/images?include_image_language=null&api_key=${tmdbApiKey}`)
+    ]);
+    var backdrops=tmdbImages.backdrops.slice(0,10);
+    res.render('movie.ejs', {
+        resultsSimilar: similarResponse.results,
+        title: tmdbResponse.name,
+        imdb_rating: imdbResponse.imdbRating,
+        year: year,
+        genre1: genres[0],
+        genre2: genres[1],
+        runtime: tmdbResponse.seasons.length + " Seasons",
+        description: description,
+        imdbId: imdbId,
+        cast:tmdbResponse.credits.cast,
+        backdrops:backdrops,
+        myListClasses:"",
+        tvShowsClasses:"underline",
+        moviesClasses:""
+    });
+});
+
 
 app.get('/search/movie',async (req,res) => {
     const tmdbSearch = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`);
@@ -100,7 +169,22 @@ app.get('/search/movie',async (req,res) => {
         searchResults:tmdbSearch.data.results,
         query:req.query.query,
         total_pages:tmdbSearch.data.total_pages,
-        page:req.query.page || 1
+        page:req.query.page || 1,
+        myListClasses:"",
+        tvShowsClasses:"",
+        moviesClasses:"underline"
+    });
+});
+app.get('/search/tv',async (req,res) => {
+    const tmdbSearch = await axios.get(`https://api.themoviedb.org/3/search/tv?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`);
+    res.render('search.ejs',{
+        searchResults:tmdbSearch.data.results,
+        query:req.query.query,
+        total_pages:tmdbSearch.data.total_pages,
+        page:req.query.page || 1,
+        myListClasses:"",
+        tvShowsClasses:"underline",
+        moviesClasses:""
     });
 });
 

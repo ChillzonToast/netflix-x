@@ -1,4 +1,4 @@
-<%- include('header.ejs' ,{page_title:'Netflix-X',moviesClasses:"underline",tvShowsClasses:"",myListClasses:"",style:'main'}) %>
+<%- include('header.ejs' ,{page_title:'Netflix-X',moviesClasses:moviesClasses,tvShowsClasses:tvShowsClasses,myListClasses:myListClasses,style:'main'}) %>
 <div id="intro" class="container my-3">
     <h2>Download and Watch Anything You Want.</h2>
     <h4>Our site provides you the best of media content all in one place</h4>
@@ -9,12 +9,16 @@
     <div class="movies d-inline-flex flex-row">
         <!-- Insert Popular Movies here -->
         <% resultsPopular.forEach((movie)=> { %>
-            <a href="/movie?movie_id=<%= movie.id %>"">
+            <% if (moviesClasses) { %>
+                <a href="/movie?movie_id=<%= movie.id %>">
+            <% } else { %>
+                <a href="/tv?tv_id=<%= movie.id %>">
+                 <% } %>
                     <div class="movie">
                         <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
                             class="m-2" alt="<%='Poster of' + movie.title %>">
                         <p>
-                            <%= movie.title %>
+                            <%= movie.title %><%= movie.name %>
                         </p>
                     </div>
                     </a>
@@ -25,30 +29,55 @@
     <div class="movies d-inline-flex flex-row">
         <!-- Insert Top Rated Movies here -->
         <% resultsTopRated.forEach((movie)=> { %>
-            <a href="/movie?movie_id=<%= movie.id %>"">
+            <% if (moviesClasses) { %>
+                <a href="/movie?movie_id=<%= movie.id %>">
+            <% } else { %>
+                <a href="/tv?tv_id=<%= movie.id %>">
+                 <% } %>
                 <div class="movie">
                     <img src="<%='https://image.tmdb.org/t/p/w500' + movie.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>"
                         class="m-2" alt="<%='Poster of' + movie.title %>">
                     <p>
-                        <%= movie.title %>
+                        <%= movie.title %><%= movie.name %>
                     </p>
                 </div>
                 </a>
             <% }) %>
     </div>
-    <h3>Newly Added (YIFY)</h3>
+    <% if (moviesClasses) { %>
+        <h3>Newly Added (YIFY)</h3>
+    <% } else { %>
+        <h3>On The Air</h3>
+    <% } %>
     <div class="movies d-inline-flex flex-row">
         <!-- Insert Newly Added Movies here -->
-        <% resultsNewlyAdded.forEach((movie)=> { %>
-            <a href="/movie?movie_id=<%= movie.imdb_code %>">
-                <div class="movie">
-                    <img src="<%= movie.medium_cover_image %>" class="m-2" alt="<%='Poster of ' + movie.title %>">
-                    <p>
-                        <%= movie.title %>
-                    </p>
-                </div>
-                    </a>
-            <% }) %>
+         <% if (moviesClasses) { %>
+            <% resultsNewlyAdded.forEach((movie)=> { %>
+                <% if (moviesClasses) { %>
+                    <a href="/movie?movie_id=<%= movie.imdb_code %>">
+                <% } else { %>
+                    <a href="/tv?tv_id=<%= movie.id %>">
+                     <% } %>
+                    <div class="movie">
+                        <img src="<%= movie.medium_cover_image %>" class="m-2" alt="<%='Poster of ' + movie.title %>">
+                        <p>
+                            <%= movie.title %>
+                        </p>
+                    </div>
+                        </a>
+                <% }) %>
+        <% } else if (tvShowsClasses) { %>
+            <% resultsNewlyAdded.forEach((tv)=> { %>
+                <a href="/tv?tv_id=<%= tv.id %>">
+                    <div class="movie">
+                        <img src="<%='https://image.tmdb.org/t/p/w500' + tv.poster_path + '?api_key=bec65bb3754d6123171bbcb3124167f0' %>" class="m-2" alt="<%='Poster of ' + tv.name %>">
+                        <p>
+                            <%= tv.name %>
+                        </p>
+                    </div>
+                        </a>
+                <% }) %>
+        <% } %>
     </div>
 </div>
 <%- include('footer.ejs') %>
