@@ -18,8 +18,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Function to fetch data from a URL
 const fetchData = async (url) => {
-    const response = await axios.get(url);
-    return response.data;
+    var i=1;
+    while (i<=100) {
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (err) {};
+        i++;
+    };
+    var resp = {
+        'results':[],
+        'movies':[],
+        'data':{'movies':[]}
+    };
+    return resp;
 };
 app.get('/', (req,res) => {
     res.redirect('/movies')
@@ -70,9 +82,9 @@ app.get('/tvs', async (req, res) => {
 app.get('/movie', async (req, res) => {
     if (req.query.movie_id[0] != 't') {
         var tmdbId = req.query.movie_id;
-        var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)).data;
+        var tmdbResponse = (await Promise.all([fetchData(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)]))[0];
         var imdbId = tmdbResponse.external_ids.imdb_id;
-        var imdbResponse = (await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)).data;
+        var imdbResponse = (await Promise.all([fetchData(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)]))[0];
     } else {
         var imdbId = req.query.movie_id;
         var [imdbResponse,tmdbResponse] = await Promise.all([
@@ -80,7 +92,7 @@ app.get('/movie', async (req, res) => {
             fetchData(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`)
         ]);
         var tmdbId = tmdbResponse.movie_results[0].id;
-        var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/movie/${tmdbResponse.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)).data;
+        var tmdbResponse = (await Promise.all([fetchData(`https://api.themoviedb.org/3/movie/${tmdbResponse.movie_results[0].id}?api_key=${tmdbApiKey}&append_to_response=credits`)]))[0];
     };
     
     var genres = [];
@@ -103,8 +115,13 @@ app.get('/movie', async (req, res) => {
     if (tmdbImages.backdrops[0]) {
         var backdrops=tmdbImages.backdrops.slice(0,10)
     } else {
-        const ytsResponse = await axios.get(`${ytsBaseUrl}/api/v2/movie_details.json?imdb_id=${imdbId}`);
-        var backdrops=[{file_path:ytsResponse.data.data.movie.background_image_original}];
+        try {
+            const ytsResponse = await axios.get(`${ytsBaseUrl}/api/v2/movie_details.json?imdb_id=${imdbId}`);
+            var backdrops=[{file_path:ytsResponse.data.data.movie.background_image_original}];
+        } catch (err) {
+            console.log(err);
+            var backdrops = [];
+        }
     };
     res.render('movie.ejs', {
         resultsSimilar: similarResponse.results,
@@ -126,9 +143,9 @@ app.get('/movie', async (req, res) => {
 
 app.get('/tv', async (req, res) => {
     var tmdbId = req.query.tv_id;
-    var tmdbResponse = (await axios.get(`https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)).data;
+    var tmdbResponse = (await Promise.all([fetchData(`https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids,credits`)]))[0];
     var imdbId = tmdbResponse.external_ids.imdb_id;
-    var imdbResponse = (await axios.get(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)).data;
+    var imdbResponse = (await Promise.all([fetchData(`http://www.omdbapi.com/?apikey=${imdbApiKey}&i=${imdbId}`)]))[0];
     var genres = [];
     tmdbResponse.genres.forEach((genre) => {
         genres.push(genre.name);
@@ -164,11 +181,11 @@ app.get('/tv', async (req, res) => {
 
 
 app.get('/search/movie',async (req,res) => {
-    const tmdbSearch = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`);
+    const tmdbSearch = (await Promise.all([fetchData(`https://api.themoviedb.org/3/search/movie?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`)]))[0];
     res.render('search.ejs',{
-        searchResults:tmdbSearch.data.results,
+        searchResults:tmdbSearch.results,
         query:req.query.query,
-        total_pages:tmdbSearch.data.total_pages,
+        total_pages:tmdbSearch.total_pages,
         page:req.query.page || 1,
         myListClasses:"",
         tvShowsClasses:"",
@@ -176,11 +193,11 @@ app.get('/search/movie',async (req,res) => {
     });
 });
 app.get('/search/tv',async (req,res) => {
-    const tmdbSearch = await axios.get(`https://api.themoviedb.org/3/search/tv?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`);
+    const tmdbSearch = (await Promise.all([fetchData(`https://api.themoviedb.org/3/search/tv?query=${req.query.query}&include_adult=false&language=en-US&page=${req.query.page || 1}&api_key=${tmdbApiKey}`)]))[0];
     res.render('search.ejs',{
-        searchResults:tmdbSearch.data.results,
+        searchResults:tmdbSearch.results,
         query:req.query.query,
-        total_pages:tmdbSearch.data.total_pages,
+        total_pages:tmdbSearch.total_pages,
         page:req.query.page || 1,
         myListClasses:"",
         tvShowsClasses:"underline",
@@ -192,7 +209,7 @@ app.get('/download/movie', async (req, res) => {
     try {
         const { imdb_id, title } = req.query;
         const ytsUrl = `${ytsBaseUrl}/api/v2/movie_details.json?imdb_id=${imdb_id}`;
-        const tpbBaseUrl = `https://pirate-proxy.black/newapi/q.php?q=`;
+        const tpbBaseUrl = `https://thepiratebay.cloud/api.php?url=/q.php?q=`;
 
         // Initiate all requests in parallel
         const [ytsResponse, tpbResults, tpbResults720p, tpbResults1080p, tpbResults4k] = await Promise.all([
@@ -225,8 +242,8 @@ app.get('/download/movie', async (req, res) => {
 
 app.get('/download/tpb',async (req,res) => {
     const [tpbResponse,tpbFiles] = await Promise.all([
-        fetchData(`https://pirate-proxy.black/newapi/t.php?id=${req.query.tpbId}`),
-        fetchData(`https://pirate-proxy.black/newapi/f.php?id=${req.query.tpbId}`)
+        fetchData(`https://thepiratebay.cloud/api.php?url=/t.php?id=${req.query.tpbId}`),
+        fetchData(`https://thepiratebay.cloud/api.php?url=/f.php?id=${req.query.tpbId}`)
     ]);
 
     var moviesClasses = "";
